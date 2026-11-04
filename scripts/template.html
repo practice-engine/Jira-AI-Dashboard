@@ -18,8 +18,8 @@ a{color:var(--navy);text-decoration:none;font-weight:500}a:hover{text-decoration
 /* header */
 header{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.04)}
 header .stripe{height:5px;background:linear-gradient(90deg,var(--navy),var(--blue))}
-header .in{display:flex;align-items:center;gap:28px;padding:22px 28px;flex-wrap:wrap}
-header img{height:46px;width:auto}
+header .in{display:flex;align-items:center;gap:24px;padding:22px 28px;flex-wrap:wrap}header .ttl{flex:1;min-width:260px}
+header img{height:44px;width:auto;flex:none}
 header .div{width:1px;align-self:stretch;background:var(--line)}
 header h1{font-size:22px;font-weight:600;color:var(--navy);letter-spacing:-.2px}
 header p{color:var(--mute);font-size:13px;margin-top:2px}
@@ -43,12 +43,12 @@ nav button.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:600}
 .sec{font-size:17px;font-weight:600;color:var(--ink);margin:30px 0 4px}
 .secsub{color:var(--mute);font-size:13px;margin-bottom:14px}
 /* kpis */
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--gap);margin-bottom:var(--gap)}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--gap);margin-bottom:var(--gap)}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s}
 .kpi:hover{box-shadow:0 4px 16px rgba(0,77,124,.08)}
 .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
 .kpi .l{font-size:12.5px;color:var(--mute)}
-.kpi .v{font-size:30px;font-weight:650;color:var(--ink);line-height:1.25;margin:2px 0}
+.kpi .v{font-size:28px;font-weight:650;color:var(--ink);line-height:1.25;margin:2px 0}
 .kpi .s{font-size:12.5px;color:var(--ink2)}
 /* bars */
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);margin-bottom:12px}
@@ -132,7 +132,7 @@ td .d{color:var(--mute);font-size:12.5px;margin-top:3px;max-width:600px}
 .dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:7px}
 .tab{display:none}.tab.on{display:block}
 footer{font-size:12px;color:var(--mute);margin:10px 2px 30px;line-height:1.6}
-@media(max-width:760px){.grid,.g3{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow .arr{transform:rotate(90deg);height:30px}header .hs{margin-left:0}.hb{grid-template-columns:120px 1fr 36px}}
+@media(max-width:1100px){header .hs{margin-left:0;width:100%}header .hs div{flex:1}}@media(max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}}@media(max-width:760px){.kpis{grid-template-columns:1fr 1fr}.grid,.g3{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow .arr{transform:rotate(90deg);height:30px}header .hs{margin-left:0}.hb{grid-template-columns:120px 1fr 36px}}
 @media print{nav,.filters,.pager{display:none}.tab{display:block!important}}
 </style>
 </head>
@@ -143,7 +143,7 @@ footer{font-size:12px;color:var(--mute);margin:10px 2px 30px;line-height:1.6}
  <div class="in">
   <img src="data:image/png;base64,/*__LOGO__*/" alt="eDerm Systems">
   <div class="div"></div>
-  <div><h1>Support Desk · Open Ticket Analysis</h1><p>Jira Service Management · project ESS · all unresolved tickets · <span id="asof"></span></p></div>
+  <div class="ttl"><h1>Support Desk · Open Ticket Analysis</h1><p>Jira Service Management · project ESS · all unresolved tickets · <span id="asof"></span></p></div>
   <div class="hs" id="hstats"></div>
  </div>
 </header>
@@ -284,7 +284,7 @@ const ring=(n,part,col,bg)=>{const r=40,c=2*Math.PI*r,f=n?part/n:0;return `<svg 
 document.getElementById('pains').innerHTML=PAINS.map(p=>{const col=p.sev==='h'?'#c97a74':'#d6a45a',bg=p.sev==='h'?'#f6e1de':'#f6ead5';return `<div class="card pain">
  <div class="hd"><div><span class="chip ${p.sev}">${p.sev==='h'?'High impact':'Medium impact'}</span><h4>${p.t}</h4></div></div>
  <div class="body"><div class="ring">${ring(p.n,p.nw,col,bg)}<div class="c"><b>${p.n}</b><span>open</span></div></div>
-  <div class="kv"><div><i style="background:${col}"></i><span><b>${p.nw}</b> new in last 60 days</span></div><div><i style="background:${bg}"></i><span><b>${p.n-p.nw}</b> older</span></div><div><i style="background:#d58a85"></i><span><b>${p.bug}</b> logged as bugs</span></div></div></div>
+  <div class="kv"><div><i style="background:${col}"></i><span><b>${p.nw}</b> new in last 60 days</span></div><div><i style="background:${bg}"></i><span><b>${p.n-p.nw}</b> older</span></div><div><i style="background:#9aa6b4"></i><span><b>${p.bug}</b> logged as bugs</span></div></div></div>
  <p>${p.d}</p><div class="ex">Examples: ${p.ex.map(J).join(' · ')}</div></div>`}).join('');
 
 // product areas
