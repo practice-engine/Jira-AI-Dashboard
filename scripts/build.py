@@ -59,8 +59,8 @@ groups=sorted(CJ['groups'],key=lambda g:-len(g['keys']))
 for g in groups: g['items']=[dict(k=k,s=K[k]['summary'],c=K[k]['created'],st=K[k]['status']) for k in g['keys']]
 DATA=dict(rows=rows,groups=groups,pairs=pairs,auto=auto,today=str(TODAY))
 js=json.dumps(DATA,ensure_ascii=False).replace('</','<\\/')
-tpl=open('/tmp/w/template.html').read()
-open(OUT,'w').write(tpl.replace('/*__DATA__*/',js).replace('/*__LOGO__*/',open('/tmp/w/logo.b64').read()))
+tpl=open(sys.argv[sys.argv.index('--tpl')+1] if '--tpl' in sys.argv else 'template.html').read()
+open(OUT,'w').write(tpl.replace('/*__DATA__*/',js).replace('/*__LOGO__*/',open('/tmp/w/logo.b64').read()).replace('/*__LOGOW__*/',open('/tmp/w/logow.b64').read()))
 print('ok',len(rows),len(groups),len(pairs),len(auto))
 # stats for findings
 k=C.Counter(r['kd'] for r in rows); print(k)

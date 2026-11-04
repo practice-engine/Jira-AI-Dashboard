@@ -1,14 +1,17 @@
 # ESS Service Desk – Open Ticket Analysis
 
-A one-page HTML dashboard built from the open tickets (statusCategory ≠ Done) in the Jira Service Management project **ESS** (ederm.atlassian.net).
+An interactive HTML dashboard (`index.html`) built from the open tickets (statusCategory ≠ Done) in the Jira Service Management project **ESS** (ederm.atlassian.net). It opens in any browser and needs no internet connection.
 
-It shows:
+Pages (left sidebar):
 
-- **Overview:** the ticket mix, monthly intake, biggest pain points, product areas, a 6-month heatmap, frequent requests and backlog health
-- **Automation opportunities:** repetitive manual work that could become product features (self-service, configuration or automation), with an impact-vs-effort matrix
-- **Similar tickets to link:** 51 groups of related tickets plus hand-checked duplicate pairs
-- **Noise / no-value:** spam, server alerts, vendor notices and reply-all duplicates, plus rules to keep them out of the queue
-- **All tickets:** a searchable, filterable table with links to Jira
+- **Dashboard:** headline numbers, ticket mix, tickets opened (weekly/monthly), top pain points, automation summary, product-area boxes and backlog age
+- **Pain points:** the six biggest customer problems, ordered by impact
+- **Automation:** 11 product features that would remove manual agent work, with a "what-if" you can switch on and off
+- **Similar tickets:** 51 groups of related tickets plus hand-checked duplicate pairs
+- **Noise:** server alerts, vendor notices and reply-all duplicates, plus rules to keep them out of the queue
+- **All tickets:** a searchable, sortable list with links to Jira
+
+Filters at the top (date range, organization, product area) update every page. Clicking any chart element opens the matching tickets, and there's a light/dark switch.
 
 Data snapshot: **2026-11-04 · 710 open tickets**
 
@@ -47,7 +50,7 @@ The `scripts/` folder has the pipeline that generated the dashboard:
 1. `consolidate.py`: flattens the Jira search results into `tickets.json`
 2. `classify.py`: assigns product area, ticket kind, noise flag and automation opportunity (keyword rules plus manual overrides)
 3. `cluster.py`: builds the similar-ticket groups and text-similarity pairs
-4. `build.py`: fills `template.html` with the data. Add `--public --out index.html` for the redacted build.
+4. `build.py`: fills `template.html` with the data and the eDerm logos (`logo.b64`, `logow.b64`). Add `--public --out index.html` for the redacted build.
 5. `opp.json`: descriptions of each automation opportunity (today's process, what to build, effort, who benefits)
 
 The scripts were run in a temporary workspace, so the file paths at the top of each script (`/tmp/w/…`) need updating before you reuse them. The ticket data came from the Jira JQL `project = ESS AND statusCategory != Done`.
