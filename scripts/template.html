@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eDerm Support · ESS Open Ticket Analysis</title>
+<style>
+:root{
+ --bg:#f6f8fb;--card:#ffffff;--ink:#22303f;--ink2:#4a5868;--mute:#7b8794;--line:#e6eaf0;--soft:#f1f4f8;
+ --navy:#004d7c;--blue:#1d8fcf;--sky:#e8f3fa;
+ --bug:#d58a85;--enh:#6f9cc8;--adm:#e0b46e;--how:#a597cf;--noise:#c3c9d2;
+ --self:#6fae9b;--conf:#e0b46e;--auto:#9a8fd0;
+ --gap:20px;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--navy);text-decoration:none;font-weight:500}a:hover{text-decoration:underline}
+.wrap{max-width:1320px;margin:0 auto;padding:24px}
+/* header */
+header{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+header .stripe{height:5px;background:linear-gradient(90deg,var(--navy),var(--blue))}
+header .in{display:flex;align-items:center;gap:28px;padding:22px 28px;flex-wrap:wrap}
+header img{height:46px;width:auto}
+header .div{width:1px;align-self:stretch;background:var(--line)}
+header h1{font-size:22px;font-weight:600;color:var(--navy);letter-spacing:-.2px}
+header p{color:var(--mute);font-size:13px;margin-top:2px}
+header .hs{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+header .hs div{background:var(--soft);border-radius:10px;padding:8px 14px;text-align:center;min-width:104px}
+header .hs b{display:block;font-size:20px;font-weight:650;color:var(--navy);line-height:1.2}
+header .hs span{font-size:11px;color:var(--mute)}
+/* nav */
+nav{display:flex;gap:4px;margin:18px 0 20px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;position:sticky;top:0;background:var(--bg);z-index:5}
+nav::-webkit-scrollbar{display:none}
+nav button{border:0;background:none;padding:12px 16px;cursor:pointer;font-size:14px;color:var(--mute);white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-1px;font-family:inherit}
+nav button:hover{color:var(--ink)}
+nav button.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:600}
+/* cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;box-shadow:0 1px 2px rgba(16,24,40,.04);margin-bottom:var(--gap)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:var(--gap);margin-bottom:var(--gap)}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:var(--gap);margin-bottom:var(--gap)}
+.grid>.card,.g3>.card{margin-bottom:0}
+.card h2{font-size:16px;font-weight:600;color:var(--ink)}
+.card .sub{color:var(--mute);font-size:13px;margin:2px 0 16px}
+.sec{font-size:17px;font-weight:600;color:var(--ink);margin:30px 0 4px}
+.secsub{color:var(--mute);font-size:13px;margin-bottom:14px}
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--gap);margin-bottom:var(--gap)}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s}
+.kpi:hover{box-shadow:0 4px 16px rgba(0,77,124,.08)}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+.kpi .l{font-size:12.5px;color:var(--mute)}
+.kpi .v{font-size:30px;font-weight:650;color:var(--ink);line-height:1.25;margin:2px 0}
+.kpi .s{font-size:12.5px;color:var(--ink2)}
+/* bars */
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);margin-bottom:12px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:0}
+.hb{display:grid;grid-template-columns:minmax(150px,230px) 1fr 44px;align-items:center;gap:12px;margin:9px 0;font-size:13.5px;cursor:pointer}
+.hb:hover .lbl{color:var(--navy)}
+.hb .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink2)}
+.hb .bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--soft)}
+.hb .bar span{height:100%}
+.hb .n{text-align:right;font-weight:600;color:var(--ink)}
+/* donut */
+.donut{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.donut .lg{flex:1;min-width:220px}
+.donut .lg div{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--soft);cursor:pointer;color:var(--ink2)}
+.donut .lg div:last-child{border-bottom:0}
+.donut .lg i{width:10px;height:10px;border-radius:50%;flex:none}
+.donut .lg b{margin-left:auto;color:var(--ink);font-weight:600}
+.donut .lg em{font-style:normal;color:var(--mute);width:40px;text-align:right;font-size:12.5px}
+/* pain */
+.pain{display:flex;flex-direction:column}
+.pain .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.pain h4{font-size:15px;font-weight:600;line-height:1.35;color:var(--ink)}
+.chip{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 10px;border-radius:20px;margin-bottom:6px}
+.chip.h{background:#fbecea;color:#a5534d}.chip.m{background:#fbf3e4;color:#94692a}
+.pain .body{display:flex;gap:18px;align-items:center;margin:14px 0 12px}
+.pain .ring{flex:none;position:relative;width:92px;height:92px}
+.pain .ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pain .ring b{font-size:24px;font-weight:650;line-height:1;color:var(--ink)}.pain .ring span{font-size:11px;color:var(--mute)}
+.pain .kv{font-size:13px;color:var(--ink2)}
+.pain .kv div{display:flex;align-items:center;gap:8px;margin:3px 0}
+.pain .kv i{width:9px;height:9px;border-radius:50%;flex:none}
+.pain p{font-size:13.5px;color:var(--ink2);flex:1}
+.pain .ex{font-size:12.5px;color:var(--mute);margin-top:12px;padding-top:12px;border-top:1px solid var(--soft)}
+/* opp */
+.explain{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--gap);margin-bottom:var(--gap)}
+.explain .card{margin:0;border-top:4px solid var(--c)}
+.explain h4{font-size:14.5px;font-weight:600;margin-bottom:4px;color:var(--ink)}
+.explain p{font-size:13.5px;color:var(--ink2)}
+.tchip{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 10px;border-radius:20px}
+.t-Self-service{background:#e8f4f0;color:#3c7b68}.t-Automation{background:#efedf9;color:#5e529a}.t-Configuration{background:#fbf3e4;color:#94692a}
+.opp{border-left:4px solid var(--c)}
+.opp .head{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.opp h2{font-size:17px;margin-top:6px}
+.opp .long{font-size:12.5px;color:var(--mute)}
+.opp .stats{margin-left:auto;display:flex;gap:10px}
+.opp .stats div{background:var(--soft);border-radius:10px;padding:8px 14px;text-align:center;min-width:92px}
+.opp .stats b{display:block;font-size:20px;font-weight:650;line-height:1.2}.opp .stats span{font-size:11px;color:var(--mute)}
+.flow{display:grid;grid-template-columns:1fr 36px 1fr;margin:18px 0 14px;align-items:stretch}
+.flow .box{border-radius:10px;padding:14px 16px;font-size:13.5px;color:var(--ink2)}
+.flow .box h5{font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;font-weight:650}
+.flow .now{background:#fbf6f4;border:1px solid #f1e2dd}.flow .now h5{color:#a5534d}
+.flow .fut{background:#f2f8f5;border:1px solid #d9ebe3}.flow .fut h5{color:#3c7b68}
+.flow .arr{display:grid;place-items:center;color:#b3bcc7;font-size:20px}
+.meta{display:flex;gap:26px;flex-wrap:wrap;font-size:13px;color:var(--mute)}
+.meta b{color:var(--ink);font-weight:600}
+.eff{display:inline-flex;gap:3px;vertical-align:middle;margin-right:4px}.eff i{width:14px;height:6px;border-radius:3px;background:#e3e7ed}.eff i.on{background:#7b8794}
+.exs{margin-top:14px;font-size:13.5px;border-top:1px solid var(--soft);padding-top:10px}
+.exs li{list-style:none;display:flex;gap:12px;padding:4px 0;color:var(--ink2)}.exs li .c{color:var(--mute);font-size:12.5px;margin-left:auto;white-space:nowrap}
+details{margin-top:8px;font-size:13px}summary{cursor:pointer;color:var(--navy)}
+.chips{margin-top:8px}.chips a{font-size:12px;display:inline-block;padding:2px 8px;margin:3px;border:1px solid var(--line);border-radius:6px;background:#fbfcfd}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;padding:10px;border-bottom:1px solid var(--line);color:var(--mute);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;user-select:none;background:#fafbfc}
+td{padding:10px;border-bottom:1px solid var(--soft);vertical-align:top;color:var(--ink2)}
+tr:hover td{background:#fafcfe}
+td .d{color:var(--mute);font-size:12.5px;margin-top:3px;max-width:600px}
+.tag{display:inline-block;font-size:11.5px;padding:1px 9px;border-radius:20px;background:var(--sky);color:#245c80;margin:4px 4px 0 0;white-space:nowrap}
+.tag.a{background:#efedf9;color:#5e529a}
+.k-Bug{background:#fbecea;color:#a5534d}.k-Enhancement{background:#eaf1f9;color:#3d6a96}.k-Manual{background:#fbf3e4;color:#94692a}.k-How-to{background:#f1eef9;color:#6a5b9c}.k-Noise{background:#f0f2f5;color:#69737f}
+.grp{border-left:4px solid var(--how)}
+.grp .gh{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.cnt{font-size:12.5px;font-weight:600;background:#f1eef9;color:#6a5b9c;padding:2px 10px;border-radius:20px;white-space:nowrap}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.filters select,.filters input{padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;background:#fff;color:var(--ink);font-family:inherit}
+.filters input{min-width:260px}
+.pager{display:flex;gap:10px;align-items:center;margin-top:14px;font-size:13px;color:var(--mute)}
+.pager button{padding:6px 12px;border:1px solid var(--line);background:#fff;border-radius:8px;cursor:pointer;font-family:inherit}
+.note{font-size:13.5px;color:var(--ink2);background:var(--sky);border:1px solid #d3e7f4;padding:14px 16px;border-radius:10px;margin-bottom:var(--gap)}
+.hyg div{display:flex;gap:10px;margin:8px 0;font-size:13.5px;color:var(--ink2)}
+.hyg b{color:var(--ink)}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:7px}
+.tab{display:none}.tab.on{display:block}
+footer{font-size:12px;color:var(--mute);margin:10px 2px 30px;line-height:1.6}
+@media(max-width:760px){.grid,.g3{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow .arr{transform:rotate(90deg);height:30px}header .hs{margin-left:0}.hb{grid-template-columns:120px 1fr 36px}}
+@media print{nav,.filters,.pager{display:none}.tab{display:block!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div class="stripe"></div>
+ <div class="in">
+  <img src="data:image/png;base64,/*__LOGO__*/" alt="eDerm Systems">
+  <div class="div"></div>
+  <div><h1>Support Desk · Open Ticket Analysis</h1><p>Jira Service Management · project ESS · all unresolved tickets · <span id="asof"></span></p></div>
+  <div class="hs" id="hstats"></div>
+ </div>
+</header>
+<nav id="nav">
+  <button data-t="ov" class="on">Overview</button>
+  <button data-t="au">Automation opportunities</button>
+  <button data-t="gr">Similar tickets to link</button>
+  <button data-t="no">Noise / no-value</button>
+  <button data-t="all">All tickets</button>
+</nav>
+
+<!-- OVERVIEW -->
+<section class="tab on" id="t-ov">
+  <div class="kpis" id="kpis"></div>
+  <div class="grid">
+    <div class="card"><h2>What kind of work is in the queue?</h2><div class="sub">Each open ticket has exactly one kind. Select one to see its tickets.</div><div class="donut" id="kdonut"></div></div>
+    <div class="card"><h2>Pain points at a glance</h2><div class="sub">Open tickets per pain point. The darker part is new in the last 60 days.</div><div id="painbars"></div>
+      <div class="legend" style="margin:14px 0 0"><span><i style="background:#c97a74"></i>New in last 60 days</span><span><i style="background:#ecc7c3"></i>Older</span></div></div>
+  </div>
+  <div class="sec">Biggest customer pain points</div>
+  <div class="secsub">Problems that block customers' daily work, ordered by impact.</div>
+  <div class="g3" id="pains"></div>
+  <div class="grid">
+    <div class="card"><h2>Open tickets by product area</h2><div class="sub">Select a row to see its tickets</div><div class="legend" id="lg"></div><div id="themes"></div></div>
+    <div class="card"><h2>Most frequent requests</h2><div class="sub">Recurring asks, by number of open tickets</div><div id="freq"></div></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>Backlog health</h2><div class="sub">How long tickets have been open, by status</div><div id="aging"></div><div class="hyg" id="hyg" style="margin-top:16px;padding-top:12px;border-top:1px solid var(--soft)"></div></div>
+    <div class="card"><h2>Top organizations</h2><div class="sub">Open tickets (tickets with no organization set are excluded)</div><div id="orgs"></div></div>
+  </div>
+</section>
+
+<!-- AUTOMATION -->
+<section class="tab" id="t-au">
+  <div class="note">These are open tickets where <b>an agent does a repetitive task by hand</b> that the product could handle instead. Each card shows today's manual process, the feature that would remove the ticket, and the open tickets behind it. Together that's <b id="autoN"></b> tickets (<b id="autoP"></b> of the queue). This is the same number as the "Automation opportunities" card on the Overview tab.</div>
+  <div class="explain">
+    <div class="card" style="--c:var(--self)"><h4>Self-service</h4><p>The <b>customer does it themselves</b> in the product instead of emailing support. For example: turn off notifications, unlock a note, run a report.</p></div>
+    <div class="card" style="--c:var(--conf)"><h4>Configuration</h4><p>A <b>practice admin changes a setting or list</b> that today needs an agent or developer. For example: document types, billing rules, scheduler rules.</p></div>
+    <div class="card" style="--c:var(--auto)"><h4>Automation</h4><p>The <b>system does it automatically</b>, with no human step. For example: provision a new provider, detect and merge duplicates.</p></div>
+  </div>
+  <div class="card"><h2>Opportunities ranked by ticket volume</h2><div class="sub">Open tickets each feature would remove. Colour shows the solution type. Select one to jump to its details.</div><div id="oppbars"></div>
+    <div class="legend" style="margin:14px 0 0"><span><i style="background:var(--self)"></i>Self-service</span><span><i style="background:var(--conf)"></i>Configuration</span><span><i style="background:var(--auto)"></i>Automation</span></div></div>
+  <div id="opps"></div>
+</section>
+
+<!-- GROUPS -->
+<section class="tab" id="t-gr">
+  <div class="note"><b>How to link:</b> in each group, use the <b>oldest ticket</b> (shown in bold) as the parent and link the rest to it with “relates to” (or “duplicates”, if it's the same issue). Groups come from keyword matching on summary and description, so check them before bulk-linking.</div>
+  <div class="grid">
+    <div class="card"><h2>Largest groups of similar tickets</h2><div class="sub">Top 15 by size. Select one to jump to the group.</div><div id="gbars"></div></div>
+    <div class="card"><h2>Likely duplicates</h2><div class="sub">Pairs found by text similarity, then reviewed by hand</div><div id="pairs" style="max-height:520px;overflow:auto"></div></div>
+  </div>
+  <div class="filters"><input id="gq" placeholder="Filter groups…"></div>
+  <div id="groups"></div>
+</section>
+
+<!-- NOISE -->
+<section class="tab" id="t-no">
+  <div class="grid">
+    <div class="card"><h2>What the noise is</h2><div class="sub">Tickets that aren't customer requests and can be closed</div><div class="donut" id="ndonut"></div></div>
+    <div class="card"><h2>How to keep these out of the queue</h2><ol style="padding-left:20px;font-size:13.5px;color:var(--ink2)" id="noisefix"></ol></div>
+  </div>
+  <div class="card"><h2>Noise / no-value tickets</h2><div class="sub"></div><div id="noise" style="overflow-x:auto"></div></div>
+</section>
+
+<!-- ALL -->
+<section class="tab" id="t-all">
+  <div class="card">
+    <div class="filters">
+      <input id="q" placeholder="Search summary, description or key…">
+      <select id="fth"><option value="">All product areas</option></select>
+      <select id="fkd"><option value="">All ticket kinds</option></select>
+      <select id="fst"><option value="">All statuses</option></select>
+      <select id="for"><option value="">All organizations</option></select>
+      <select id="fau"><option value="">Any automation opportunity</option><option value="__yes">Has an automation opportunity</option></select>
+    </div>
+    <div id="cnt" style="font-size:13px;color:var(--mute);margin-bottom:8px"></div>
+    <div style="overflow-x:auto"><table style="min-width:880px"><thead><tr>
+      <th data-c="k">Key</th><th data-c="s">Summary</th><th data-c="th">Product area</th><th data-c="kd">Kind</th>
+      <th data-c="st">Status</th><th data-c="o">Org</th><th data-c="a">Age (days)</th></tr></thead><tbody id="tb"></tbody></table></div>
+    <div class="pager"><button id="pv">‹ Previous</button><span id="pg"></span><button id="nx">Next ›</button></div>
+  </div>
+</section>
+
+<footer>How this was built: tickets were pulled live from Jira on the date shown. Product area and ticket kind were assigned with keyword rules on the summary and description, plus a manual pass over unclear tickets. Treat individual labels as a strong first pass and verify before bulk actions in Jira. Effort ratings (S/M/L) are rough estimates, not engineering sizing.</footer>
+</div>
+
+<script>
+const D=/*__DATA__*/;
+const J=k=>`<a href="https://ederm.atlassian.net/browse/${k}" target="_blank">${k}</a>`;
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KC={'Bug / defect':'#d58a85','Enhancement request':'#6f9cc8','Manual admin request':'#e0b46e','How-to question':'#a597cf','Noise / no action':'#c3c9d2'};
+const KINDS=Object.keys(KC);
+const TC={'Self-service':'#6fae9b','Automation':'#9a8fd0','Configuration':'#e0b46e'};
+const kt=k=>`<span class="tag k-${k.split(' ')[0]}">${esc(k)}</span>`;
+const R=D.rows, by=(a,f)=>a.reduce((m,x)=>{const v=f(x);m[v]=(m[v]||0)+1;return m},{});
+const cnt=f=>R.filter(f).length, pct=n=>Math.round(100*n/R.length)+'%';
+const G=n=>D.groups.find(g=>g.name.startsWith(n))||{keys:[]};
+const go=(id,v)=>{document.getElementById(id).value=v;show('all');F()};
+document.getElementById('asof').textContent='snapshot '+D.today;
+
+// header + KPIs
+const kind=by(R,r=>r.kd), autoN=cnt(r=>r.au);
+const d90=new Date(D.today);d90.setDate(d90.getDate()-90);const s90=d90.toISOString().slice(0,10);
+document.getElementById('hstats').innerHTML=`<div><b>${R.length}</b><span>open tickets</span></div><div><b>${Object.keys(by(R.filter(r=>r.o),r=>r.o)).length}</b><span>organizations</span></div><div><b>${cnt(r=>r.c>=s90)}</b><span>opened in last 90 days</span></div>`;
+const kp=[['Bugs / defects',kind['Bug / defect'],cnt(r=>r.kd==='Bug / defect'&&r.a>90)+' open longer than 90 days','#d58a85',()=>go('fkd','Bug / defect')],
+ ['Enhancement requests',kind['Enhancement request'],cnt(r=>r.kd==='Enhancement request'&&r.st==='Waiting for approval')+' waiting for approval','#6f9cc8',()=>go('fkd','Enhancement request')],
+ ['Manual admin requests',kind['Manual admin request'],'Tasks agents do by hand','#e0b46e',()=>go('fkd','Manual admin request')],
+ ['Automation opportunities',autoN,pct(autoN)+' of the queue could be removed','#9a8fd0',()=>show('au')],
+ ['Noise / no action',kind['Noise / no action'],'Safe to close','#c3c9d2',()=>show('no')]];
+document.getElementById('kpis').innerHTML=kp.map((k,i)=>`<div class="kpi" data-i="${i}" style="--c:${k[3]}"><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
+document.querySelectorAll('.kpi').forEach(e=>e.onclick=kp[e.dataset.i][4]);
+
+// donut
+function donut(el,entries,colors,onClick,label='tickets'){const tot=entries.reduce((a,b)=>a+b[1],0);let a0=-Math.PI/2;const cx=95,cy=95,r=86,ri=62;
+ const arcs=entries.map(([k,v],i)=>{if(!v)return '';const a1=a0+2*Math.PI*v/tot-0.012,lg=a1-a0>Math.PI?1:0;
+  const p=`M${cx+r*Math.cos(a0)},${cy+r*Math.sin(a0)}A${r},${r} 0 ${lg} 1 ${cx+r*Math.cos(a1)},${cy+r*Math.sin(a1)}L${cx+ri*Math.cos(a1)},${cy+ri*Math.sin(a1)}A${ri},${ri} 0 ${lg} 0 ${cx+ri*Math.cos(a0)},${cy+ri*Math.sin(a0)}Z`;a0=a1+0.012;
+  return `<path d="${p}" fill="${colors[i]}" data-k="${esc(k)}" style="cursor:pointer"><title>${esc(k)}: ${v}</title></path>`}).join('');
+ el.innerHTML=`<svg width="190" height="190" viewBox="0 0 190 190">${arcs}<text x="95" y="96" text-anchor="middle" font-size="30" font-weight="650" fill="#22303f">${tot}</text><text x="95" y="116" text-anchor="middle" font-size="12" fill="#7b8794">${label}</text></svg>
+ <div class="lg">${entries.map(([k,v],i)=>`<div data-k="${esc(k)}"><i style="background:${colors[i]}"></i>${esc(k)}<b>${v}</b><em>${Math.round(100*v/tot)}%</em></div>`).join('')}</div>`;
+ if(onClick)el.querySelectorAll('[data-k]').forEach(x=>x.onclick=()=>onClick(x.dataset.k));}
+donut(document.getElementById('kdonut'),KINDS.map(k=>[k,kind[k]||0]),KINDS.map(k=>KC[k]),k=>go('fkd',k));
+
+// pain points
+const inG=(...names)=>{const s=new Set(names.flatMap(n=>G(n).keys));return r=>s.has(r.k)};
+const thb=t=>r=>r.th===t&&r.kd==='Bug / defect';
+const PAINS=[
+ {t:'Notes won’t close or sign out',sev:'h',f:inG('Notes won'),d:'Providers get stuck in a “saving to cloud” loop and can’t finish charts. Almost all of these arrived in the last two weeks.',ex:G('Notes won').keys.slice(-3)},
+ {t:'iPad problems after the latest update',sev:'h',f:inG('Post-update'),d:'Patient search takes 10–20 seconds, the offline banner keeps appearing, and charts on hold lost the appointment date and time.',ex:G('Post-update').keys.slice(-3)},
+ {t:'Billing rules & exception queue bugs',sev:'h',f:thb('Billing rules & exception queue'),d:'MOD59 hold logic, J-code units, wrong place of service and $0 bills. This is the largest product area overall.',ex:['ESS-24699','ESS-26868','ESS-20118']},
+ {t:'Duplicate patients, charges & payments',sev:'m',f:inG('Duplicate patient','Duplicate charges'),d:'Duplicate or triple patient accounts are being created, plus duplicate CPTs, copays and payment postings that Tier 2 fixes by hand.',ex:['ESS-26854','ESS-26018','ESS-24485']},
+ {t:'Lost path reports & requisitions',sev:'m',f:thb('Pathology & labs'),d:'Path reports going missing, path tasks disappearing, requisitions not printing, and the wrong lab on the requisition.',ex:['ESS-26819','ESS-25086','ESS-26700']},
+ {t:'Ghost faxes & fax failures',sev:'m',f:inG('Old','eFax queue'),d:'Faxes dated months or years ago keep arriving, some at the wrong office, alongside fax failures and routing errors.',ex:['ESS-24567','ESS-24273','ESS-19402']}];
+PAINS.forEach(p=>{p.n=cnt(p.f);p.nw=cnt(r=>p.f(r)&&r.a<=60);p.bug=cnt(r=>p.f(r)&&r.kd==='Bug / defect');p.wait=cnt(r=>p.f(r)&&/support|dev|working/i.test(r.st))});
+const pm=Math.max(...PAINS.map(p=>p.n));
+document.getElementById('painbars').innerHTML=PAINS.map(p=>`<div class="hb" style="cursor:default"><div class="lbl" title="${esc(p.t)}">${esc(p.t)}</div><div class="bar"><span style="width:${100*p.nw/pm}%;background:#c97a74"></span><span style="width:${100*(p.n-p.nw)/pm}%;background:#ecc7c3"></span></div><div class="n">${p.n}</div></div>`).join('');
+const ring=(n,part,col,bg)=>{const r=40,c=2*Math.PI*r,f=n?part/n:0;return `<svg width="92" height="92" viewBox="0 0 92 92"><circle cx="46" cy="46" r="${r}" fill="none" stroke="${bg}" stroke-width="9"/><circle cx="46" cy="46" r="${r}" fill="none" stroke="${col}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(c*f).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 46 46)"/></svg>`};
+document.getElementById('pains').innerHTML=PAINS.map(p=>{const col=p.sev==='h'?'#c97a74':'#d6a45a',bg=p.sev==='h'?'#f6e1de':'#f6ead5';return `<div class="card pain">
+ <div class="hd"><div><span class="chip ${p.sev}">${p.sev==='h'?'High impact':'Medium impact'}</span><h4>${p.t}</h4></div></div>
+ <div class="body"><div class="ring">${ring(p.n,p.nw,col,bg)}<div class="c"><b>${p.n}</b><span>open</span></div></div>
+  <div class="kv"><div><i style="background:${col}"></i><span><b>${p.nw}</b> new in last 60 days</span></div><div><i style="background:${bg}"></i><span><b>${p.n-p.nw}</b> older</span></div><div><i style="background:#d58a85"></i><span><b>${p.bug}</b> logged as bugs</span></div></div></div>
+ <p>${p.d}</p><div class="ex">Examples: ${p.ex.map(J).join(' · ')}</div></div>`}).join('');
+
+// product areas
+const th=by(R,r=>r.th);
+document.getElementById('lg').innerHTML=KINDS.map(k=>`<span><i style="background:${KC[k]}"></i>${k}</span>`).join('');
+const themes=Object.entries(th).sort((a,b)=>b[1]-a[1]),mx=themes[0][1];
+document.getElementById('themes').innerHTML=themes.map(([t,n])=>{
+ const seg=KINDS.map(k=>{const c=cnt(r=>r.th===t&&r.kd===k);return c?`<span title="${k}: ${c}" style="width:${100*c/mx}%;background:${KC[k]}"></span>`:''}).join('');
+ return `<div class="hb" data-v="${esc(t)}"><div class="lbl" title="${esc(t)}">${esc(t)}</div><div class="bar">${seg}</div><div class="n">${n}</div></div>`}).join('');
+document.querySelectorAll('#themes .hb').forEach(e=>e.onclick=()=>go('fth',e.dataset.v));
+
+// frequent requests
+const FREQ=[['Report / Power BI changes',cnt(r=>r.th==='Reporting & Power BI'&&r.kd!=='Bug / defect')],
+ ['New exception holds / billing rules',cnt(r=>r.au&&r.au.startsWith('Practice-configurable billing'))+cnt(r=>r.th==='Billing rules & exception queue'&&r.kd==='Enhancement request'&&!r.au)],
+ ['Online scheduler / self-registration changes',cnt(r=>r.th==='Online scheduling, self-registration & check-in'&&r.kd!=='Bug / defect')],
+ ['New provider alerts & terminations',cnt(r=>r.th==='Provider onboarding & offboarding'&&r.kd!=='Noise / no action')],
+ ['Add or change document types',G('Add / change document').keys.length],
+ ['Turn off notification emails',G('Turn off').keys.length],
+ ['Pathology results log export / filters',G('Pathology results').keys.length],
+ ['Audit trail requests',G('Audit').keys.length]].sort((a,b)=>b[1]-a[1]);
+const fm=FREQ[0][1];
+document.getElementById('freq').innerHTML=FREQ.map(f=>`<div class="hb" style="cursor:default"><div class="lbl">${f[0]}</div><div class="bar"><span style="width:${100*f[1]/fm}%;background:#6f9cc8"></span></div><div class="n">${f[1]}</div></div>`).join('');
+
+// backlog health
+(function(){const B=[['Under 30 days',0,30],['30–90 days',30,90],['3–12 months',90,365],['Over 1 year',365,1e9]],BC=['#cfe2f1','#9cc3e2','#5f97c6','#2f6797'];
+ const sts=Object.entries(by(R,r=>r.st)).sort((a,b)=>b[1]-a[1]),m=sts[0][1];
+ document.getElementById('aging').innerHTML=`<div class="legend">${B.map((b,i)=>`<span><i style="background:${BC[i]}"></i>${b[0]}</span>`).join('')}</div>`+sts.map(([s,n])=>`<div class="hb" data-v="${esc(s)}"><div class="lbl">${esc(s)}</div><div class="bar">${B.map((b,i)=>{const c=cnt(r=>r.st===s&&r.a>=b[1]&&r.a<b[2]);return c?`<span title="${b[0]}: ${c}" style="width:${100*c/m}%;background:${BC[i]}"></span>`:''}).join('')}</div><div class="n">${n}</div></div>`).join('');
+ document.querySelectorAll('#aging .hb').forEach(x=>x.onclick=()=>go('fst',x.dataset.v));
+ document.getElementById('hyg').innerHTML=[
+  ['#2f6797',`<b>${cnt(r=>r.st==='Waiting for approval'&&r.a>365)}</b> tickets have been waiting for approval for over a year. Close them or move them to a product backlog.`],
+  ['#e0b46e',`<b>${cnt(r=>r.st==='Waiting for customer'&&r.a>30)}</b> tickets have been waiting for the customer for over 30 days. They're candidates for an auto-close rule.`],
+  ['#a597cf',`<b>${pct(cnt(r=>r.as_==='Hiren Parmar'))}</b> of the queue is assigned to one person (Hiren Parmar).`]].map(x=>`<div><span class="dot" style="background:${x[0]}"></span><span>${x[1]}</span></div>`).join('')})();
+(function(){const e=Object.entries(by(R.filter(r=>r.o),r=>r.o)).sort((a,b)=>b[1]-a[1]).slice(0,10),m=e[0][1];
+ document.getElementById('orgs').innerHTML=e.map(([k,n])=>`<div class="hb" data-v="${esc(k)}"><div class="lbl">${esc(k)}</div><div class="bar"><span style="width:${100*n/m}%;background:#6fae9b"></span></div><div class="n">${n}</div></div>`).join('');
+ document.querySelectorAll('#orgs .hb').forEach(x=>x.onclick=()=>go('for',x.dataset.v))})();
+
+// ===== automation =====
+document.getElementById('autoN').textContent=autoN;document.getElementById('autoP').textContent=pct(autoN);
+const A=D.auto.map((a,i)=>({...a,i,last90:cnt(r=>r.au===a.name&&r.a<=90)}));
+const am=Math.max(...A.map(a=>a.count));
+document.getElementById('oppbars').innerHTML=A.map(a=>`<div class="hb" data-i="${a.i}" title="${esc(a.name)}"><div class="lbl">${esc(a.short)}</div><div class="bar"><span style="width:${100*a.count/am}%;background:${TC[a.type]}"></span></div><div class="n">${a.count}</div></div>`).join('');
+document.querySelectorAll('#oppbars .hb').forEach(e=>e.onclick=()=>document.getElementById('opp'+e.dataset.i).scrollIntoView({behavior:'smooth',block:'start'}));
+const effBar=e=>`<span class="eff">${[0,1,2].map(i=>`<i class="${i<={S:0,M:1,L:2}[e]?'on':''}"></i>`).join('')}</span>${({S:'Small',M:'Medium',L:'Large'})[e]}`;
+document.getElementById('opps').innerHTML=A.map(a=>`<div class="card opp" id="opp${a.i}" style="--c:${TC[a.type]}">
+ <div class="head"><div><span class="tchip t-${a.type}">${a.type}</span><h2>${esc(a.short)}</h2><div class="long">${esc(a.name)}</div></div>
+  <div class="stats"><div><b>${a.count}</b><span>open tickets</span></div><div><b>${a.last90}</b><span>last 90 days</span></div><div><b>${pct(a.count)}</b><span>of queue</span></div></div></div>
+ <div class="flow"><div class="box now"><h5>Today: done by hand</h5>${esc(a.today)}</div><div class="arr">→</div><div class="box fut"><h5>Build this</h5>${esc(a.build)}</div></div>
+ <div class="meta"><span>Effort (rough): <b>${effBar(a.effort)}</b></span><span>Who benefits: <b>${esc(a.who)}</b></span></div>
+ <ul class="exs">${a.ex.map(e=>`<li>${J(e.k)}<span>${esc(e.s)}</span><span class="c">${e.c}</span></li>`).join('')}</ul>
+ <details><summary>Show all ${a.count} tickets</summary><div class="chips">${a.keys.map(k=>{const r=R.find(x=>x.k===k);return `<a href="https://ederm.atlassian.net/browse/${k}" target="_blank" title="${esc(r.s)}">${k}</a>`}).join('')}</div></details>
+</div>`).join('');
+
+// ===== groups =====
+const GT=D.groups.slice(0,15),gm=GT[0].keys.length;
+document.getElementById('gbars').innerHTML=GT.map((g,i)=>`<div class="hb" data-i="${i}"><div class="lbl" title="${esc(g.name)}">${esc(g.name)}</div><div class="bar"><span style="width:${100*g.keys.length/gm}%;background:#a597cf"></span></div><div class="n">${g.keys.length}</div></div>`).join('');
+document.querySelectorAll('#gbars .hb').forEach(e=>e.onclick=()=>document.getElementById('grp'+e.dataset.i).scrollIntoView({behavior:'smooth',block:'start'}));
+document.getElementById('pairs').innerHTML=`<table><thead><tr><th>Ticket A</th><th>Ticket B</th><th>Why they match</th></tr></thead><tbody>${D.pairs.map(p=>`<tr><td>${J(p.a)}<div class="d">${esc(p.sa)}</div></td><td>${J(p.b)}<div class="d">${esc(p.sb)}</div></td><td>${esc(p.why)}</td></tr>`).join('')}</tbody></table>`;
+const RG=q=>{q=(q||'').toLowerCase();document.getElementById('groups').innerHTML=D.groups.map((g,i)=>[g,i]).filter(([g])=>!q||g.name.toLowerCase().includes(q)||g.items.some(it=>(it.k+' '+it.s).toLowerCase().includes(q))).map(([g,i])=>`<div class="card grp" id="grp${i}">
+ <div class="gh"><h2>${esc(g.name)}</h2><span class="cnt">${g.keys.length} tickets</span></div>
+ <div class="sub" style="margin:2px 0 8px">Suggested parent: ${J(g.primary)} (oldest)</div>
+ <table><tbody>${g.items.map(it=>`<tr><td style="width:100px;white-space:nowrap">${it.k===g.primary?'<b>'+J(it.k)+'</b>':J(it.k)}</td><td>${esc(it.s)}</td><td style="width:100px;color:var(--mute)">${it.c}</td><td style="width:170px;color:var(--mute)">${esc(it.st)}</td></tr>`).join('')}</tbody></table></div>`).join('')};
+RG();document.getElementById('gq').oninput=e=>RG(e.target.value);
+
+// ===== noise =====
+const NZ=R.filter(r=>r.kd==='Noise / no action');
+const ncat=r=>/server|monitoring/i.test(r.n)?'Server monitoring alerts':/vendor \/ third|notice/i.test(r.n)?'Vendor notices & receipts':/outreach/i.test(r.n)?'Unsolicited vendor outreach':'Reply-all / duplicate emails';
+const nc=Object.entries(by(NZ,ncat)).sort((a,b)=>b[1]-a[1]);
+donut(document.getElementById('ndonut'),nc,['#9aa6b4','#c3c9d2','#dde1e7','#d58a85'].slice(0,nc.length));
+document.getElementById('noise').innerHTML=`<table style="min-width:760px"><thead><tr><th>Key</th><th>Summary</th><th>Category</th><th>Why it's noise</th><th>Created</th></tr></thead><tbody>${NZ.map(r=>`<tr><td style="white-space:nowrap">${J(r.k)}</td><td>${esc(r.s)}</td><td><span class="tag k-Noise">${ncat(r)}</span></td><td>${esc(r.n)}</td><td style="white-space:nowrap">${r.c}</td></tr>`).join('')}</tbody></table>`;
+document.getElementById('noisefix').innerHTML=[
+ '<b>Server monitoring alerts</b> (Byte Solutions "low disk space" for EDAZ servers): send these to IT or ops monitoring, not the customer service desk. Add an email-channel rule to block automated alerts from help@bytesolutions.com.',
+ '<b>Vendor notices and receipts</b> (Surescripts certificate notices, QuickBooks receipts, HHS letters): send these to an admin or ops mailbox instead of support.',
+ '<b>Unsolicited partner outreach</b> (FHIR API access requests from Flexpa, Antaeus Health): send these to partnerships or the product team.',
+ '<b>Reply-all and "Received, thank you" emails</b> open new tickets because the subject lacks the ticket key. Put the ESS key in outgoing notification subjects so replies thread as comments.',
+ '<b>Automation rule:</b> merge new emails whose subject starts with RE:/FW: and matches an open ticket from the same reporter within 7 days.'
+].map(x=>`<li style="margin:8px 0">${x}</li>`).join('');
+
+// ===== explorer =====
+const sel=(id,vals,lab)=>{const s=document.getElementById(id);[...new Set(vals)].filter(Boolean).sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=lab?lab(v):v;s.appendChild(o)})};
+const shortOf=Object.fromEntries(D.auto.map(a=>[a.name,a.short]));
+sel('fth',R.map(r=>r.th));sel('fkd',R.map(r=>r.kd));sel('fst',R.map(r=>r.st));sel('for',R.map(r=>r.o));sel('fau',R.map(r=>r.au),v=>shortOf[v]||v);
+let rows=R,sc='a',sd=1,page=0;const PS=50;
+function F(){const q=document.getElementById('q').value.toLowerCase(),v=id=>document.getElementById(id).value;
+ rows=R.filter(r=>(!q||(r.k+' '+r.s+' '+r.d+' '+r.o+' '+r.r).toLowerCase().includes(q))&&(!v('fth')||r.th===v('fth'))&&(!v('fkd')||r.kd===v('fkd'))&&(!v('fst')||r.st===v('fst'))&&(!v('for')||r.o===v('for'))&&(!v('fau')||(v('fau')==='__yes'?r.au:r.au===v('fau'))));
+ page=0;T()}
+function T(){const s=[...rows].sort((a,b)=>{const x=a[sc],y=b[sc];return (x<y?-1:x>y?1:0)*sd});
+ const p=s.slice(page*PS,page*PS+PS);
+ document.getElementById('cnt').textContent=rows.length+' tickets match';
+ document.getElementById('tb').innerHTML=p.map(r=>`<tr><td style="white-space:nowrap">${J(r.k)}</td><td><span style="color:var(--ink);font-weight:500">${esc(r.s)}</span>${r.d?`<div class="d">${esc(r.d.slice(0,180))}</div>`:''}<div>${r.g.map(g=>`<span class="tag">${esc(g)}</span>`).join('')}${r.au?`<span class="tag a">${esc(shortOf[r.au]||r.au)}</span>`:''}</div></td>
+ <td>${esc(r.th)}</td><td>${kt(r.kd)}</td><td>${esc(r.st)}</td><td>${esc(r.o)}</td><td>${r.a}</td></tr>`).join('');
+ const np=Math.max(1,Math.ceil(rows.length/PS));document.getElementById('pg').textContent=`Page ${page+1} of ${np}`;
+ document.getElementById('pv').disabled=page===0;document.getElementById('nx').disabled=page>=np-1;}
+['q','fth','fkd','fst','for','fau'].forEach(id=>document.getElementById(id).addEventListener(id==='q'?'input':'change',F));
+document.querySelectorAll('th[data-c]').forEach(h=>h.onclick=()=>{const c=h.dataset.c;sd=sc===c?-sd:1;sc=c;T()});
+document.getElementById('pv').onclick=()=>{page--;T()};document.getElementById('nx').onclick=()=>{page++;T()};
+F();
+function show(t){document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('on',e.id==='t-'+t));document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));window.scrollTo(0,0)}
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>show(b.dataset.t));
+if(location.hash)show(location.hash.slice(1));
+</script>
+</body>
+</html>
